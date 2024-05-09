@@ -54,3 +54,5 @@ if __name__ == "__main__":
 
     trainer.fit(model, datamodule=datamodule)
     trainer.validate(ckpt_path='best', datamodule=datamodule)
+    
+    wandb.finish()
