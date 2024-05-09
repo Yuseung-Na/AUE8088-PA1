@@ -32,11 +32,11 @@ class MyF1Score(Metric):
 
     def compute(self):
         # Compute precision and recall for each class
-        precision = self.true_positives / (self.true_positives + self.false_positives + 1e-6)
-        recall = self.true_positives / (self.true_positives + self.false_negatives + 1e-6)
+        precision = self.true_positives / (self.true_positives + self.false_positives + 1e-16)
+        recall = self.true_positives / (self.true_positives + self.false_negatives + 1e-16)
         
         # Compute F1 score for each class
-        f1_score = 2 * (precision * recall) / (precision + recall + 1e-6)
+        f1_score = 2 * (precision * recall) / (precision + recall + 1e-16)
         
         # Return the mean F1 score across all classes
         return torch.mean(f1_score)
