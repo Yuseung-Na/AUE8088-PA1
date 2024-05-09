@@ -31,6 +31,7 @@ PRECISION_STR       = '32-true'
 
 # Logging
 WANDB_PROJECT       = 'aue8088-pa1'
+WANDB_KEY           = '661022ff94c279a9358152cf17453028a6c6f3a1'
 WANDB_ENTITY        = os.environ.get('WANDB_ENTITY')
 WANDB_SAVE_DIR      = 'wandb/'
 WANDB_IMG_LOG_FREQ  = 50

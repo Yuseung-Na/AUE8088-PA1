@@ -8,6 +8,7 @@ from lightning.pytorch.loggers.wandb import WandbLogger
 from lightning.pytorch.callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning import Trainer
 import torch
+import wandb
 
 # Custom packages
 from src.dataset import TinyImageNetDatasetModule
@@ -30,6 +31,7 @@ if __name__ == "__main__":
         batch_size = cfg.BATCH_SIZE,
     )
 
+    wandb.login(key = cfg.WANDB_KEY, relogin = True)
     wandb_logger = WandbLogger(
         project = cfg.WANDB_PROJECT,
         save_dir = cfg.WANDB_SAVE_DIR,
