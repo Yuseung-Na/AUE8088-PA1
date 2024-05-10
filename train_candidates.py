@@ -43,6 +43,7 @@ optimizer_params_list = [
 optimizer_schedul_params_list = [
     {'type': 'SGD', 'lr': 0.005, 'momentum': 0.9},
     {'type': 'Adam', 'lr': 0.001},
+    {'type': 'AdamW', 'lr': 0.001},
 ]
 
 scheduler_params_list = [
@@ -147,6 +148,8 @@ if __name__ == "__main__":
             cfg.WANDB_NAME += f'-{current_scheduler_params["type"]}{current_optimizer_params["lr"]:.1E}' 
             
             if current_optimizer_params["type"] == 'Adam' and current_scheduler_params["type"] == 'CyclicLR':
+                continue
+            if current_optimizer_params["type"] == 'AdamW' and current_scheduler_params["type"] == 'CyclicLR':
                 continue
 
             model = SimpleClassifier(
