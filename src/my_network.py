@@ -308,3 +308,50 @@ class MyAlexSE(AlexNet):
             nn.Linear(4096, num_classes),
         )
                 
+class MyAlexTotal(AlexNet):
+    def __init__(self, 
+                 num_classes: int = 200,
+                 dropout: float = 0.5
+        ):
+        super().__init__(num_classes=num_classes, dropout=dropout)
+
+        # [TODO] Modify feature extractor part in AlexNet
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
+            
+            #### Add batch normalization ####
+            nn.BatchNorm2d(64),
+            
+            nn.ReLU(inplace=False),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            
+            #### Add residual block ####
+            ResidualBlock(64, 64),
+            ResidualBlock(64, 128, stride=2, downsample=nn.Sequential(
+                nn.Conv2d(64, 128, kernel_size=1, stride=2, bias=False),
+                nn.BatchNorm2d(128))),
+            nn.ReLU(inplace=False),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            
+            #### Add inception module ####
+            InceptionBlock(128),
+            nn.ReLU(inplace=False),
+            SEBlock(256),  # SE block after Inception block output            
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            
+            #### Add residual block ####
+            ResidualBlock(256, 512, stride=2, downsample=nn.Sequential(
+                nn.Conv2d(256, 512, kernel_size=1, stride=2, bias=False),
+                nn.BatchNorm2d(512))),            
+        )
+        self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
+        self.classifier = nn.Sequential(
+            nn.Dropout(p=dropout),
+            nn.Linear(512 * 6 * 6, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=dropout),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes),
+        )
+    
