@@ -19,6 +19,7 @@ from src.util import show_setting
 
 # MyNetworks
 from src.my_network import MyAlex
+from src.my_network import MyAlexDeep
 
 class SimpleClassifier(LightningModule):
     def __init__(self,
@@ -32,6 +33,8 @@ class SimpleClassifier(LightningModule):
         # Network
         if model_name == 'MyAlex':
             self.model = MyAlex(num_classes)
+        elif model_name == 'MyAlexDeep':
+            self.model = MyAlexDeep(num_classes)
         else:
             models_list = models.list_models()
             assert model_name in models_list, f'Unknown model name: {model_name}. Choose one from {", ".join(models_list)}'
