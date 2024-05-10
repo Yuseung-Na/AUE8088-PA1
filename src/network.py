@@ -24,6 +24,7 @@ from src.my_network import MyAlexBN
 from src.my_network import MyAlexDeepBN
 from src.my_network import MyAlexInception
 from src.my_network import MyAlexResidual
+from src.my_network import MyAlexSE
 
 class SimpleClassifier(LightningModule):
     def __init__(self,
@@ -47,6 +48,8 @@ class SimpleClassifier(LightningModule):
             self.model = MyAlexInception(num_classes)
         elif model_name == 'MyAlexResidual':
             self.model = MyAlexResidual(num_classes)
+        elif model_name == 'MyAlexSE':
+            self.model = MyAlexSE(num_classes)
         else:
             models_list = models.list_models()
             assert model_name in models_list, f'Unknown model name: {model_name}. Choose one from {", ".join(models_list)}'
