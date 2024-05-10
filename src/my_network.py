@@ -3,6 +3,9 @@ from torch import nn
 from torchvision.models.alexnet import AlexNet
 import torch
 
+# Blocks
+from src.blocks import InceptionBlock
+
 # [TODO: Optional] Rewrite this class if you want
 class MyNetwork(AlexNet):
     def __init__(self, 
@@ -182,3 +185,31 @@ class MyAlexDeepBN(AlexNet):
             nn.Linear(4096, num_classes),
         )
         
+class MyAlexInception(AlexNet):
+    def __init__(self, 
+                 num_classes: int = 200,
+                 dropout: float = 0.5
+        ):
+        super().__init__(num_classes=num_classes, dropout=dropout)
+
+        # [TODO] Modify feature extractor part in AlexNet
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+            
+            #### Add inception module ####
+            InceptionBlock(64),
+            InceptionBlock(256),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+        )
+        self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
+        self.classifier = nn.Sequential(
+            nn.Dropout(p=dropout),
+            nn.Linear(256 * 6 * 6, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=dropout),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes),
+        )
