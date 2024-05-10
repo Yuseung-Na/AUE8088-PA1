@@ -17,23 +17,8 @@ from src.metric import MyF1Score
 import src.config as cfg
 from src.util import show_setting
 
-
-# [TODO: Optional] Rewrite this class if you want
-class MyNetwork(AlexNet):
-    def __init__(self):
-        super().__init__()
-
-        # [TODO] Modify feature extractor part in AlexNet
-
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # [TODO: Optional] Modify this as well if you want
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = torch.flatten(x, 1)
-        x = self.classifier(x)
-        return x
-
+# MyNetworks
+from src.my_network import MyAlex
 
 class SimpleClassifier(LightningModule):
     def __init__(self,
@@ -45,8 +30,8 @@ class SimpleClassifier(LightningModule):
         super().__init__()
 
         # Network
-        if model_name == 'MyNetwork':
-            self.model = MyNetwork()
+        if model_name == 'MyAlex':
+            self.model = MyAlex(num_classes)
         else:
             models_list = models.list_models()
             assert model_name in models_list, f'Unknown model name: {model_name}. Choose one from {", ".join(models_list)}'
