@@ -316,12 +316,16 @@ class MyAlexTotal(AlexNet):
         super().__init__(num_classes=num_classes, dropout=dropout)
 
         # [TODO] Modify feature extractor part in AlexNet
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
+        self.features = nn.Sequential(                  
+            nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1),
+            
+            #### Add batch normalization ####
+            nn.BatchNorm2d(32),            
+            nn.ReLU(inplace=False),
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
             
             #### Add batch normalization ####
             nn.BatchNorm2d(64),
-            
             nn.ReLU(inplace=False),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
@@ -331,18 +335,19 @@ class MyAlexTotal(AlexNet):
                 nn.Conv2d(64, 128, kernel_size=1, stride=2, bias=False),
                 nn.BatchNorm2d(128))),
             nn.ReLU(inplace=False),
-            nn.MaxPool2d(kernel_size=2, stride=2),
             
-            #### Add inception module ####
+            #### Add inception block ####
             InceptionBlock(128),
-            nn.ReLU(inplace=False),
-            SEBlock(256),  # SE block after Inception block output            
+            
+            #### Add SE block ####
+            SEBlock(256),            
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             #### Add residual block ####
+            ResidualBlock(256, 256),
             ResidualBlock(256, 512, stride=2, downsample=nn.Sequential(
                 nn.Conv2d(256, 512, kernel_size=1, stride=2, bias=False),
-                nn.BatchNorm2d(512))),            
+                nn.BatchNorm2d(512))),
         )
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
